@@ -1,0 +1,21 @@
+module.exports = {
+    cars: 506,
+    cars_model: 48,
+    colors: 19,
+    companies: 347,
+    countries: 136,
+    geners: 20,
+    job_titles: 186,
+    movies: 979,
+    universities: 863,
+    users: 1000,
+    user_car: 1000,
+    user_color: 1000,
+    user_company: 1000,
+    user_country: 1000,
+    user_gener: 1000,
+    user_job_title: 1000,
+    user_movie: 1000,
+    user_profile: 1000,
+    user_university: 999
+};

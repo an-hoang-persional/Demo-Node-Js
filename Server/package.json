@@ -1,0 +1,25 @@
+{
+  "name": "Server",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">   <a href=\"https://nodejs.org/\">     <img       alt=\"Node.js\"       src=\"https://nodejs.org/static/images/logo-light.svg\"       width=\"400\"     />   </a> </p>",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "moment": "^2.22.2",
+    "multer": "^1.4.1",
+    "mysql": "^2.16.0",
+    "validator": "^10.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}
