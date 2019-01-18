@@ -1,5 +1,4 @@
 const express = require('express');
-const validator = require('validator');
 
 const Forbidden = require('../common/forbidden');
 const Responses = require('../common/responses');
@@ -75,7 +74,7 @@ router.post('/create-new-car-model', (req, res) => {
     });
 });
 
-router.post('/update-car-model', (req, res) => {
+router.post('/change-car-model', async(req, res) => {
     const id = req.body.id;
     const model = req.body.model;
 
@@ -97,18 +96,12 @@ router.post('/update-car-model', (req, res) => {
     };
 
     // Update car model
-    CarModelController.update(carModel, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success(carModel));
-    });
+    await CarModelController.update(carModel);
+
+    return res.send(Responses.success({}));
 });
 
-router.post('/delete-car-model', (req, res) => {
+router.post('/delete-car-model', async(req, res) => {
     const id = req.body.id;
     let validate;
 
@@ -123,15 +116,9 @@ router.post('/delete-car-model', (req, res) => {
         return res.send(Responses.error(validate.message));
     }
     // Delete car model
-    CarModelController.delete(id, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success({}));
-    });
+    await CarModelController.delete(id);
+
+    return res.send(Responses.success({}));
 });
 
 module.exports = router;

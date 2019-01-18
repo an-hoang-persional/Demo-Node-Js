@@ -67,21 +67,21 @@ class Companies {
      * Update company name
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(data, callback) {
+    async update(data) {
         const query = 'UPDATE companies SET company_name = ? WHERE company_id = ?';
 
-        Connection.query(query, [data.name, data.id], callback);
+        await Connection.query(query, [data.name, data.id]);
     }
 
     /**
      * Delete company
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
+    async delete(id) {
         let query = 'DELETE FROM companies';
 
         if (Array.isArray(id)) {
@@ -90,7 +90,7 @@ class Companies {
         } else {
             query += ' WHERE company_id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 }
 

@@ -59,14 +59,19 @@ router.post('/find-by-country-id', (req, res) => {
 router.post('/create-new-country', (req, res) => {
     const name = req.body.name;
     const code = req.body.code;
+    const check = [{
+        value: name,
+        label: 'Country name'
+    }, {
+        value: code,
+        label: 'Country code'
+    }];
 
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Country name is empty !'));
-    }
-    // Check if the code has a length of zero
-    if (validator.isEmpty(code)) {
-        return res.send(Responses.error('Country code is empty !'));
+    // Check if the country name or country code has a length of zero
+    const validate = Utils.checkEmpty(check);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     const country = {
         name: name,
@@ -86,24 +91,30 @@ router.post('/create-new-country', (req, res) => {
     });
 });
 
-router.post('/update-country', (req, res) => {
+router.post('/change-country', async(req, res) => {
     const id = req.body.id;
     const name = req.body.name;
     const code = req.body.code;
+    const check = [{
+        value: name,
+        label: 'Country name'
+    }, {
+        value: code,
+        label: 'Country code'
+    }];
 
     // Check the country id
-    const validate = Utils.checkNumber(id, 'Country id', Forbidden.countries);
+    let validate = Utils.checkNumber(id, 'Country id', Forbidden.countries);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Country name is empty !'));
-    }
-    // Check if the code has a length of zero
-    if (validator.isEmpty(code)) {
-        return res.send(Responses.error('Country code is empty !'));
+
+    // Check if the country name or country code has a length of zero
+    validate = Utils.checkEmpty(check);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     const country = {
         id: id,
@@ -112,18 +123,12 @@ router.post('/update-country', (req, res) => {
     };
 
     // Update country
-    CountryController.update(country, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success(country));
-    });
+    await CountryController.update(country);
+
+    return res.send(Responses.success({}));
 });
 
-router.post('/delete-country', (req, res) => {
+router.post('/delete-country', async(req, res) => {
     const id = req.body.id;
     let validate;
 
@@ -138,15 +143,9 @@ router.post('/delete-country', (req, res) => {
         return res.send(Responses.error(validate.message));
     }
     // Delete country
-    CountryController.delete(id, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success({}));
-    });
+    await CountryController.delete(id);
+
+    return res.send(Responses.success({}));
 });
 
 module.exports = router;

@@ -132,7 +132,7 @@ CREATE TABLE `users` (
   `user_id` int(12) NOT NULL,
   `username` varchar(32) NOT NULL,
   `email` varchar(64) NOT NULL,
-  `password` varchar(128) NOT NULL,
+  `password` varchar(64) NOT NULL,
   `role` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -233,11 +233,11 @@ CREATE TABLE `user_profile` (
   `first_name` varchar(32) NOT NULL,
   `last_name` varchar(32) NOT NULL,
   `gender` tinyint(1) NOT NULL DEFAULT '0',
-  `birthday` date NOT NULL,
-  `phone_number` varchar(10) NOT NULL,
-  `address` text NOT NULL,
-  `slogan` text NOT NULL,
-  `avatar` text NOT NULL
+  `birthday` date,
+  `phone_number` varchar(10),
+  `address` text,
+  `slogan` text,
+  `avatar` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

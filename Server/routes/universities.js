@@ -56,10 +56,16 @@ router.post('/find-by-university-id', (req, res) => {
 
 router.post('/create-new-university', (req, res) => {
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'University name'
+    };
 
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('University name is empty !'));
+    // Check if the university name has a length of zero
+    const validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     // Create new university
     UniversityController.create(name, (error, result) => {
@@ -73,19 +79,26 @@ router.post('/create-new-university', (req, res) => {
     });
 });
 
-router.post('/update-university-name', (req, res) => {
+router.post('/change-university-name', async(req, res) => {
     const id = req.body.id;
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'University name'
+    };
 
     // Check the university id
-    const validate = Utils.checkNumber(id, 'University id', Forbidden.universities);
+    let validate = Utils.checkNumber(id, 'University id', Forbidden.universities);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('University name is empty !'));
+
+    // Check if the university name has a length of zero
+    validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     const university = {
         id: id,
@@ -93,18 +106,12 @@ router.post('/update-university-name', (req, res) => {
     };
 
     // Update university name
-    UniversityController.update(university, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success(university));
-    });
+    await UniversityController.update(university);
+
+    return res.send(Responses.success({}));
 });
 
-router.post('/delete-university', (req, res) => {
+router.post('/delete-university', async(req, res) => {
     const id = req.body.id;
     let validate;
 
@@ -119,15 +126,9 @@ router.post('/delete-university', (req, res) => {
         return res.send(Responses.error(validate.message));
     }
     // Delete university
-    UniversityController.delete(id, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success({}));
-    });
+    await UniversityController.delete(id);
+
+    return res.send(Responses.success({}));
 });
 
 module.exports = router;

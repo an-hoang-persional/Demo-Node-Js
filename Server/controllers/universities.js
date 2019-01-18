@@ -57,7 +57,7 @@ class UniversityController {
         // Create new university
         University.create(data, (error, result) => {
             if (error) {
-                callback(error, null);
+                return callback(error, null);
             }
             // Find by university id
             University.findById(result.insertId, callback);
@@ -68,47 +68,27 @@ class UniversityController {
      * Update university name
      *
      * @param params
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(params, callback) {
+    async update(params) {
         const data = {
             id: params.id,
             name: params.name
         };
 
-        // Find by university id
-        University.findById(params.id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Update university name
-                University.update(data, callback);
-            }
-        });
+        // Update university name
+        await University.update(data);
     }
 
     /**
      * Delete university
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
-        // Find by university id
-        University.findById(id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Delete university
-                University.delete(id, callback);
-            }
-        });
+    async delete(id) {
+        // Delete university
+        await University.delete(id);
     }
 }
 

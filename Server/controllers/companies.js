@@ -57,7 +57,7 @@ class CompanyController {
         // Create new company
         Company.create(data, (error, result) => {
             if (error) {
-                callback(error, null);
+                return callback(error, null);
             }
             // Find by company id
             Company.findById(result.insertId, callback);
@@ -68,47 +68,27 @@ class CompanyController {
      * Update company name
      *
      * @param params
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(params, callback) {
+    async update(params) {
         const data = {
             id: params.id,
             name: params.name
         };
 
-        // Find by company id
-        Company.findById(params.id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Update company name
-                Company.update(data, callback);
-            }
-        });
+        // Update company name
+        await Company.update(data);
     }
 
     /**
      * Delete company
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
-        // Find by company id
-        Company.findById(id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Delete company
-                Company.delete(id, callback);
-            }
-        });
+    async delete(id) {
+        // Delete company
+        await Company.delete(id);
     }
 }
 

@@ -1,4 +1,7 @@
+const bcrypt = require('bcrypt');
 const validator = require('validator');
+
+const Email = require('../config/email');
 
 module.exports = {
     /**
@@ -76,5 +79,70 @@ module.exports = {
         return {
             error: false
         };
+    },
+    /**
+     * Check if the string has a length of zero
+     *
+     * @param fields
+     * @returns {*}
+     */
+    checkEmpty: (fields) => {
+        fields = Array.isArray(fields) ? fields : [fields];
+
+        let messages = [];
+
+        for (let field of fields) {
+            if (validator.isEmpty(field.value)) {
+                messages.push(`${field.label} is empty !`);
+            }
+        }
+        if (messages.length > 0) {
+            return {
+                error: true,
+                message: messages.join('<br>')
+            };
+        }
+        return {
+            error: false
+        };
+    },
+    /**
+     * Check if the string is an email
+     *
+     * @param email
+     * @returns {*}
+     */
+    validateEmail: (email) => {
+        if (!validator.isEmail(email)) {
+            return {
+                error: true,
+                message: 'Enter e-mail address correctly !'
+            };
+        }
+        return {
+            error: false,
+            email: validator.normalizeEmail(email, Email.normalizeEmail)
+        };
+    },
+    /**
+     * Hash password
+     *
+     * @param password
+     * @returns {*}
+     */
+    hashPassword: (password) => {
+        const salt = bcrypt.genSaltSync(10);
+
+        return bcrypt.hashSync(password, salt);
+    },
+    /**
+     * Check password
+     *
+     * @param password
+     * @param hash
+     * @returns {*}
+     */
+    checkPassword: (password, hash) => {
+        return bcrypt.compareSync(password, hash);
     }
 };

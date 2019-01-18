@@ -57,7 +57,7 @@ class GenerController {
         // Create new gener
         Gener.create(data, (error, result) => {
             if (error) {
-                callback(error, null);
+                return callback(error, null);
             }
             // Find by gener id
             Gener.findById(result.insertId, callback);
@@ -68,47 +68,27 @@ class GenerController {
      * Update gener name
      *
      * @param params
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(params, callback) {
+    async update(params) {
         const data = {
             id: params.id,
             name: params.name
         };
 
-        // Find by gener id
-        Gener.findById(params.id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Update gener name
-                Gener.update(data, callback);
-            }
-        });
+        // Update gener name
+        await Gener.update(data);
     }
 
     /**
      * Delete gener
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
-        // Find by gener id
-        Gener.findById(id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Delete gener
-                Gener.delete(id, callback);
-            }
-        });
+    async delete(id) {
+        // Delete gener
+        await Gener.delete(id);
     }
 }
 

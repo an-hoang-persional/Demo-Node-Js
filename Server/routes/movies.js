@@ -56,10 +56,16 @@ router.post('/find-by-movie-id', (req, res) => {
 
 router.post('/create-new-movie', (req, res) => {
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Movie name'
+    };
 
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Movie name is empty !'));
+    // Check if the movie name has a length of zero
+    const validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     // Create new movie
     MovieController.create(name, (error, result) => {
@@ -73,19 +79,26 @@ router.post('/create-new-movie', (req, res) => {
     });
 });
 
-router.post('/update-movie-name', (req, res) => {
+router.post('/change-movie-name', async(req, res) => {
     const id = req.body.id;
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Movie name'
+    };
 
     // Check the movie id
-    const validate = Utils.checkNumber(id, 'Movie id', Forbidden.movies);
+    let validate = Utils.checkNumber(id, 'Movie id', Forbidden.movies);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Movie name is empty !'));
+
+    // Check if the movie name has a length of zero
+    validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     const movie = {
         id: id,
@@ -93,18 +106,12 @@ router.post('/update-movie-name', (req, res) => {
     };
 
     // Update movie name
-    MovieController.update(movie, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success(movie));
-    });
+    await MovieController.update(movie);
+
+    return res.send(Responses.success({}));
 });
 
-router.post('/delete-movie', (req, res) => {
+router.post('/delete-movie', async(req, res) => {
     const id = req.body.id;
     let validate;
 
@@ -119,15 +126,9 @@ router.post('/delete-movie', (req, res) => {
         return res.send(Responses.error(validate.message));
     }
     // Delete movie
-    MovieController.delete(id, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success({}));
-    });
+    await MovieController.delete(id);
+
+    return res.send(Responses.success({}));
 });
 
 module.exports = router;

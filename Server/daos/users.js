@@ -92,7 +92,7 @@ class Users {
             ) users_tmp
             LEFT JOIN (
                 SELECT
-                    user_car.id, user_car.user_id,
+                    user_car.id AS user_car_id, user_car.user_id,
                     cars.car_id, cars.car_name,
                     cars_model.car_model_id, cars_model.car_model
                 FROM user_car
@@ -105,7 +105,7 @@ class Users {
                 ON cars_tmp.user_id = users_tmp.user_id
             LEFT JOIN (
                 SELECT
-                    user_color.id, user_color.user_id,
+                    user_color.id AS user_color_id, user_color.user_id,
                     colors.color_id, colors.color_name
                 FROM user_color
                 INNER JOIN colors
@@ -115,7 +115,7 @@ class Users {
                 ON colors_tmp.user_id = users_tmp.user_id
             LEFT JOIN (
                 SELECT
-                    user_company.id, user_company.user_id,
+                    user_company.id AS user_company_id, user_company.user_id,
                     companies.company_id, companies.company_name
                 FROM user_company
                 INNER JOIN companies
@@ -125,7 +125,7 @@ class Users {
                 ON companies_tmp.user_id = users_tmp.user_id
             LEFT JOIN (
                 SELECT
-                    user_country.id, user_country.user_id,
+                    user_country.id AS user_country_id, user_country.user_id,
                     countries.country_id, countries.country_name, countries.country_code
                 FROM user_country
                 INNER JOIN countries
@@ -135,7 +135,7 @@ class Users {
                 ON countries_tmp.user_id = users_tmp.user_id
             LEFT JOIN (
                 SELECT
-                    user_gener.id, user_gener.user_id,
+                    user_gener.id AS user_gener_id, user_gener.user_id,
                     geners.gener_id, geners.gener_name
                 FROM user_gener
                 INNER JOIN geners
@@ -145,7 +145,7 @@ class Users {
                 ON geners_tmp.user_id = users_tmp.user_id
             LEFT JOIN (
                 SELECT
-                    user_job_title.id, user_job_title.user_id,
+                    user_job_title.id AS user_job_title_id, user_job_title.user_id,
                     job_titles.job_title_id, job_titles.job_title_name
                 FROM user_job_title
                 INNER JOIN job_titles
@@ -155,7 +155,7 @@ class Users {
                 ON job_titles_tmp.user_id = users_tmp.user_id
             LEFT JOIN (
                 SELECT
-                    user_movie.id, user_movie.user_id,
+                    user_movie.id AS user_movie_id, user_movie.user_id,
                     movies.movie_id, movies.movie_name
                 FROM user_movie
                 INNER JOIN movies
@@ -165,7 +165,7 @@ class Users {
                 ON movies_tmp.user_id = users_tmp.user_id
             LEFT JOIN (
                 SELECT
-                    user_university.id, user_university.user_id,
+                    user_university.id AS user_university_id, user_university.user_id,
                     universities.university_id, universities.university_name
                 FROM user_university
                 INNER JOIN universities
@@ -224,33 +224,33 @@ class Users {
      * Update password
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updatePassword(data, callback) {
+    async updatePassword(data) {
         const query = 'UPDATE users SET password = ? WHERE user_id = ?';
 
-        Connection.query(query, [data.password, data.id], callback);
+        await Connection.query(query, [data.password, data.id]);
     }
 
     /**
      * Update role
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updateRole(data, callback) {
+    async updateRole(data) {
         const query = 'UPDATE users SET role = ? WHERE user_id = ?';
 
-        Connection.query(query, [data.role, data.id], callback);
+        await Connection.query(query, [data.role, data.id]);
     }
 
     /**
      * Update user profile
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updateProfile(data, callback) {
+    async updateProfile(data) {
         const query = `
             UPDATE
                 user_profile
@@ -258,16 +258,16 @@ class Users {
                 first_name = ?, last_name = ?, gender = ?, birthday = ?, phone_number = ?, address = ?, slogan = ?, avatar = ?
             WHERE user_id = ?`;
 
-        Connection.query(query, [data.fname, data.lname, data.gender, data.birthday, data.phone, data.address, data.slogan, data.avatar, data.id], callback);
+        await Connection.query(query, [data.firstName, data.lastName, data.gender, data.birthday, data.phone, data.address, data.slogan, data.avatar, data.id]);
     }
 
     /**
      * Delete user
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
+    async delete(id) {
         let query = `
             DELETE
                 users, user_profile, user_car, user_color, user_company, user_country, user_gener, user_job_title, user_movie, user_university
@@ -297,40 +297,40 @@ class Users {
         } else {
             query += ' WHERE users.user_id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 
     /**
      * Add new user car relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    addCar(data, callback) {
-        const query = 'INSERT INTO user_car (user_id, car_id, car_model_id) VALUES ?';
+    async addCar(data) {
+        const query = 'INSERT INTO user_car SET ?';
 
-        Connection.query(query, [data], callback);
+        await Connection.query(query, data);
     }
 
     /**
      * Update user car relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updateCar(data, callback) {
+    async updateCar(data) {
         const query = 'UPDATE user_car SET car_id = ?, car_model_id = ? WHERE id = ?';
 
-        Connection.query(query, [data.carId, data.modelId, data.id], callback);
+        await Connection.query(query, [data.carId, data.modelId, data.id]);
     }
 
     /**
      * Delete user car relationship
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    deleteCar(id, callback) {
+    async deleteCar(id) {
         let query = 'DELETE FROM user_car';
 
         if (Array.isArray(id)) {
@@ -339,40 +339,40 @@ class Users {
         } else {
             query += ' WHERE id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 
     /**
      * Add new user color relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    addColor(data, callback) {
-        const query = 'INSERT INTO user_color (user_id, color_id) VALUES ?';
+    async addColor(data) {
+        const query = 'INSERT INTO user_color SET ?';
 
-        Connection.query(query, [data], callback);
+        await Connection.query(query, data);
     }
 
     /**
      * Update user color relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updateColor(data, callback) {
+    async updateColor(data) {
         const query = 'UPDATE user_color SET color_id = ? WHERE id = ?';
 
-        Connection.query(query, [data.colorId, data.id], callback);
+        await Connection.query(query, [data.colorId, data.id]);
     }
 
     /**
      * Delete user color relationship
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    deleteColor(id, callback) {
+    async deleteColor(id) {
         let query = 'DELETE FROM user_color';
 
         if (Array.isArray(id)) {
@@ -381,40 +381,40 @@ class Users {
         } else {
             query += ' WHERE id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 
     /**
      * Add new user company relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    addCompany(data, callback) {
-        const query = 'INSERT INTO user_company (user_id, company_id) VALUES ?';
+    async addCompany(data) {
+        const query = 'INSERT INTO user_company SET ?';
 
-        Connection.query(query, [data], callback);
+        await Connection.query(query, data);
     }
 
     /**
      * Update user company relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updateCompany(data, callback) {
+    async updateCompany(data) {
         const query = 'UPDATE user_company SET company_id = ? WHERE id = ?';
 
-        Connection.query(query, [data.companyId, data.id], callback);
+        await Connection.query(query, [data.companyId, data.id]);
     }
 
     /**
      * Delete user company relationship
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    deleteCompany(id, callback) {
+    async deleteCompany(id) {
         let query = 'DELETE FROM user_company';
 
         if (Array.isArray(id)) {
@@ -423,40 +423,40 @@ class Users {
         } else {
             query += ' WHERE id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 
     /**
      * Add new user country relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    addCountry(data, callback) {
-        const query = 'INSERT INTO user_country (user_id, country_id) VALUES ?';
+    async addCountry(data) {
+        const query = 'INSERT INTO user_country SET ?';
 
-        Connection.query(query, [data], callback);
+        await Connection.query(query, data);
     }
 
     /**
      * Update user country relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updateCountry(data, callback) {
+    async updateCountry(data) {
         const query = 'UPDATE user_country SET country_id = ? WHERE id = ?';
 
-        Connection.query(query, [data.countryId, data.id], callback);
+        await Connection.query(query, [data.countryId, data.id]);
     }
 
     /**
      * Delete user country relationship
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    deleteCountry(id, callback) {
+    async deleteCountry(id) {
         let query = 'DELETE FROM user_country';
 
         if (Array.isArray(id)) {
@@ -465,31 +465,31 @@ class Users {
         } else {
             query += ' WHERE id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 
     /**
      * Add new user gener relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    addGener(data, callback) {
-        const query = 'INSERT INTO user_gener (user_id, gener_id) VALUES ?';
+    async addGener(data) {
+        const query = 'INSERT INTO user_gener SET ?';
 
-        Connection.query(query, [data], callback);
+        await Connection.query(query, data);
     }
 
     /**
      * Update user gener relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updateGener(data, callback) {
+    async updateGener(data) {
         const query = 'UPDATE user_gener SET gener_id = ? WHERE id = ?';
 
-        Connection.query(query, [data.generId, data.id], callback);
+        await Connection.query(query, [data.generId, data.id]);
     }
 
     /**
@@ -497,8 +497,9 @@ class Users {
      *
      * @param id
      * @param callback
+     * @returns {Promise<void>}
      */
-    deleteGener(id, callback) {
+    async deleteGener(id, callback) {
         let query = 'DELETE FROM user_gener';
 
         if (Array.isArray(id)) {
@@ -507,40 +508,40 @@ class Users {
         } else {
             query += ' WHERE id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 
     /**
      * Add new user job title relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    addJobTitle(data, callback) {
-        const query = 'INSERT INTO user_job_title (user_id, job_title_id) VALUES ?';
+    async addJobTitle(data) {
+        const query = 'INSERT INTO user_job_title SET ?';
 
-        Connection.query(query, [data], callback);
+        await Connection.query(query, data);
     }
 
     /**
      * Update user job title relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updateJobTitle(data, callback) {
+    async updateJobTitle(data) {
         const query = 'UPDATE user_job_title SET job_title_id = ? WHERE id = ?';
 
-        Connection.query(query, [data.titleId, data.id], callback);
+        await Connection.query(query, [data.titleId, data.id]);
     }
 
     /**
      * Delete user job title relationship
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    deleteJobTitle(id, callback) {
+    async deleteJobTitle(id) {
         let query = 'DELETE FROM user_job_title';
 
         if (Array.isArray(id)) {
@@ -549,40 +550,40 @@ class Users {
         } else {
             query += ' WHERE id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 
     /**
      * Add new user movie relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    addMovie(data, callback) {
-        const query = 'INSERT INTO user_movie (user_id, movie_id) VALUES ?';
+    async addMovie(data) {
+        const query = 'INSERT INTO user_movie SET ?';
 
-        Connection.query(query, [data], callback);
+        await Connection.query(query, data);
     }
 
     /**
      * Update user movie relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updateMovie(data, callback) {
+    async updateMovie(data) {
         const query = 'UPDATE user_movie SET movie_id = ? WHERE id = ?';
 
-        Connection.query(query, [data.movieId, data.id], callback);
+        await Connection.query(query, [data.movieId, data.id]);
     }
 
     /**
      * Delete user movie relationship
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    deleteMovie(id, callback) {
+    async deleteMovie(id) {
         let query = 'DELETE FROM user_movie';
 
         if (Array.isArray(id)) {
@@ -591,40 +592,40 @@ class Users {
         } else {
             query += ' WHERE id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 
     /**
      * Add new user university relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    addUniversity(data, callback) {
-        const query = 'INSERT INTO user_university (user_id, university_id) VALUES ?';
+    async addUniversity(data) {
+        const query = 'INSERT INTO user_university SET ?';
 
-        Connection.query(query, [data], callback);
+        await Connection.query(query, data);
     }
 
     /**
      * Update user university relationship
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    updateUniversity(data, callback) {
+    async updateUniversity(data) {
         const query = 'UPDATE user_university SET university_id = ? WHERE id = ?';
 
-        Connection.query(query, [data.universityId, data.id], callback);
+        await Connection.query(query, [data.universityId, data.id]);
     }
 
     /**
      * Delete user university relationship
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    deleteUniversity(id, callback) {
+    async deleteUniversity(id) {
         let query = 'DELETE FROM user_university';
 
         if (Array.isArray(id)) {
@@ -633,7 +634,7 @@ class Users {
         } else {
             query += ' WHERE id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 }
 

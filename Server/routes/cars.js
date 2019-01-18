@@ -1,5 +1,4 @@
 const express = require('express');
-const validator = require('validator');
 
 const Forbidden = require('../common/forbidden');
 const Responses = require('../common/responses');
@@ -56,10 +55,16 @@ router.post('/find-by-car-id', (req, res) => {
 
 router.post('/create-new-car', (req, res) => {
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Car name'
+    };
 
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Car name is empty !'));
+    // Check if the car name has a length of zero
+    const validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     // Create new car
     CarController.create(name, (error, result) => {
@@ -73,19 +78,26 @@ router.post('/create-new-car', (req, res) => {
     });
 });
 
-router.post('/update-car-name', (req, res) => {
+router.post('/change-car-name', async(req, res) => {
     const id = req.body.id;
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Car name'
+    };
 
     // Check the car id
-    const validate = Utils.checkNumber(id, 'Car id', Forbidden.cars);
+    let validate = Utils.checkNumber(id, 'Car id', Forbidden.cars);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Car name is empty !'));
+
+    // Check if the car name has a length of zero
+    validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     const car = {
         id: id,
@@ -93,18 +105,12 @@ router.post('/update-car-name', (req, res) => {
     };
 
     // Update car name
-    CarController.update(car, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success(car));
-    });
+    await CarController.update(car);
+
+    return res.send(Responses.success({}));
 });
 
-router.post('/delete-car', (req, res) => {
+router.post('/delete-car', async(req, res) => {
     const id = req.body.id;
     let validate;
 
@@ -119,15 +125,9 @@ router.post('/delete-car', (req, res) => {
         return res.send(Responses.error(validate.message));
     }
     // Delete car
-    CarController.delete(id, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success({}));
-    });
+    await CarController.delete(id);
+
+    return res.send(Responses.success({}));
 });
 
 module.exports = router;

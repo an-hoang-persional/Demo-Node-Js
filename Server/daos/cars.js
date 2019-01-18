@@ -67,21 +67,21 @@ class Cars {
      * Update car name
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(data, callback) {
+    async update(data) {
         const query = 'UPDATE cars SET car_name = ? WHERE car_id = ?';
 
-        Connection.query(query, [data.name, data.id], callback);
+        await Connection.query(query, [data.name, data.id]);
     }
 
     /**
      * Delete car
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
+    async delete(id) {
         let query = 'DELETE FROM cars';
 
         if (Array.isArray(id)) {
@@ -90,7 +90,7 @@ class Cars {
         } else {
             query += ' WHERE car_id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 }
 

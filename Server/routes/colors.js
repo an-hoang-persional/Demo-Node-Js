@@ -1,5 +1,4 @@
 const express = require('express');
-const validator = require('validator');
 
 const Forbidden = require('../common/forbidden');
 const Responses = require('../common/responses');
@@ -56,10 +55,16 @@ router.post('/find-by-color-id', (req, res) => {
 
 router.post('/create-new-color', (req, res) => {
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Color name'
+    };
 
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Color name is empty !'));
+    // Check if the color name has a length of zero
+    const validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     // Create new color
     ColorController.create(name, (error, result) => {
@@ -73,19 +78,26 @@ router.post('/create-new-color', (req, res) => {
     });
 });
 
-router.post('/update-color-name', (req, res) => {
+router.post('/change-color-name', async(req, res) => {
     const id = req.body.id;
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Color name'
+    };
 
     // Check the color id
-    const validate = Utils.checkNumber(id, 'Color id', Forbidden.colors);
+    let validate = Utils.checkNumber(id, 'Color id', Forbidden.colors);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Color name is empty !'));
+
+    // Check if the color name has a length of zero
+    validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     const color = {
         id: id,
@@ -93,18 +105,12 @@ router.post('/update-color-name', (req, res) => {
     };
 
     // Update color name
-    ColorController.update(color, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success(color));
-    });
+    await ColorController.update(color);
+
+    return res.send(Responses.success({}));
 });
 
-router.post('/delete-color', (req, res) => {
+router.post('/delete-color', async(req, res) => {
     const id = req.body.id;
     let validate;
 
@@ -119,15 +125,9 @@ router.post('/delete-color', (req, res) => {
         return res.send(Responses.error(validate.message));
     }
     // Delete color
-    ColorController.delete(id, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success({}));
-    });
+    await ColorController.delete(id);
+
+    return res.send(Responses.success({}));
 });
 
 module.exports = router;

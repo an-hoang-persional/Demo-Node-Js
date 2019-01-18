@@ -57,7 +57,7 @@ class JobTitleController {
         // Create new job title
         JobTitle.create(data, (error, result) => {
             if (error) {
-                callback(error, null);
+                return callback(error, null);
             }
             // Find by job title id
             JobTitle.findById(result.insertId, callback);
@@ -68,47 +68,27 @@ class JobTitleController {
      * Update job title name
      *
      * @param params
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(params, callback) {
+    async update(params) {
         const data = {
             id: params.id,
             name: params.name
         };
 
-        // Find by job title id
-        JobTitle.findById(params.id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Update job title name
-                JobTitle.update(data, callback);
-            }
-        });
+        // Update job title name
+        await JobTitle.update(data);
     }
 
     /**
      * Delete job title
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
-        // Find by job title id
-        JobTitle.findById(id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Delete job title
-                JobTitle.delete(id, callback);
-            }
-        });
+    async delete(id) {
+        // Delete job title
+        await JobTitle.delete(id);
     }
 }
 

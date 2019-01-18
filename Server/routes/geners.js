@@ -56,10 +56,16 @@ router.post('/find-by-gener-id', (req, res) => {
 
 router.post('/create-new-gener', (req, res) => {
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Gener name'
+    };
 
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Gener name is empty !'));
+    // Check if the gener name has a length of zero
+    const validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     // Create new gener
     GenerController.create(name, (error, result) => {
@@ -73,19 +79,26 @@ router.post('/create-new-gener', (req, res) => {
     });
 });
 
-router.post('/update-gener-name', (req, res) => {
+router.post('/change-gener-name', async(req, res) => {
     const id = req.body.id;
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Gener name'
+    };
 
     // Check the gener id
-    const validate = Utils.checkNumber(id, 'Gener id', Forbidden.geners);
+    let validate = Utils.checkNumber(id, 'Gener id', Forbidden.geners);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Gener name is empty !'));
+
+    // Check if the gener name has a length of zero
+    validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     const gener = {
         id: id,
@@ -93,18 +106,12 @@ router.post('/update-gener-name', (req, res) => {
     };
 
     // Update gener name
-    GenerController.update(gener, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success(gener));
-    });
+    await GenerController.update(gener);
+
+    return res.send(Responses.success({}));
 });
 
-router.post('/delete-gener', (req, res) => {
+router.post('/delete-gener', async(req, res) => {
     const id = req.body.id;
     let validate;
 
@@ -119,15 +126,9 @@ router.post('/delete-gener', (req, res) => {
         return res.send(Responses.error(validate.message));
     }
     // Delete gener
-    GenerController.delete(id, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success({}));
-    });
+    await GenerController.delete(id);
+
+    return res.send(Responses.success({}));
 });
 
 module.exports = router;

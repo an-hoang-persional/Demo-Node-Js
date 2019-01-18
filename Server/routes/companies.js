@@ -56,10 +56,16 @@ router.post('/find-by-company-id', (req, res) => {
 
 router.post('/create-new-company', (req, res) => {
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Company name'
+    };
 
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Company name is empty !'));
+    // Check if the company name has a length of zero
+    const validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     // Create new company
     CompanyController.create(name, (error, result) => {
@@ -73,19 +79,26 @@ router.post('/create-new-company', (req, res) => {
     });
 });
 
-router.post('/update-company-name', (req, res) => {
+router.post('/change-company-name', async(req, res) => {
     const id = req.body.id;
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Company name'
+    };
 
     // Check the company id
-    const validate = Utils.checkNumber(id, 'Company id', Forbidden.companies);
+    let validate = Utils.checkNumber(id, 'Company id', Forbidden.companies);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Company name is empty !'));
+
+    // Check if the company name has a length of zero
+    validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     const company = {
         id: id,
@@ -93,18 +106,12 @@ router.post('/update-company-name', (req, res) => {
     };
 
     // Update company name
-    CompanyController.update(company, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success(company));
-    });
+    await CompanyController.update(company);
+
+    return res.send(Responses.success({}));
 });
 
-router.post('/delete-company', (req, res) => {
+router.post('/delete-company', async(req, res) => {
     const id = req.body.id;
     let validate;
 
@@ -119,15 +126,9 @@ router.post('/delete-company', (req, res) => {
         return res.send(Responses.error(validate.message));
     }
     // Delete company
-    CompanyController.delete(id, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success({}));
-    });
+    await CompanyController.delete(id);
+
+    return res.send(Responses.success({}));
 });
 
 module.exports = router;

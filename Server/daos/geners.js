@@ -67,21 +67,21 @@ class Geners {
      * Update gener name
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(data, callback) {
+    async update(data) {
         const query = 'UPDATE geners SET gener_name = ? WHERE gener_id = ?';
 
-        Connection.query(query, [data.name, data.id], callback);
+        await Connection.query(query, [data.name, data.id]);
     }
 
     /**
      * Delete gener
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
+    async delete(id) {
         let query = 'DELETE FROM geners';
 
         if (Array.isArray(id)) {
@@ -90,7 +90,7 @@ class Geners {
         } else {
             query += ' WHERE gener_id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 }
 

@@ -67,21 +67,21 @@ class Universities {
      * Update university name
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(data, callback) {
+    async update(data) {
         const query = 'UPDATE universities SET university_name = ? WHERE university_id = ?';
 
-        Connection.query(query, [data.name, data.id], callback);
+        await Connection.query(query, [data.name, data.id]);
     }
 
     /**
      * Delete university
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
+    async delete(id) {
         let query = 'DELETE FROM universities';
 
         if (Array.isArray(id)) {
@@ -90,7 +90,7 @@ class Universities {
         } else {
             query += ' WHERE university_id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 }
 

@@ -56,10 +56,16 @@ router.post('/find-by-job-title-id', (req, res) => {
 
 router.post('/create-new-job-title', (req, res) => {
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Job title name'
+    };
 
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Job title name is empty !'));
+    // Check if the job title name has a length of zero
+    const validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     // Create new job title
     JobTitleController.create(name, (error, result) => {
@@ -73,19 +79,26 @@ router.post('/create-new-job-title', (req, res) => {
     });
 });
 
-router.post('/update-job-title-name', (req, res) => {
+router.post('/change-job-title-name', async(req, res) => {
     const id = req.body.id;
     const name = req.body.name;
+    const nameCheck = {
+        value: name,
+        label: 'Job title name'
+    };
 
     // Check the job title id
-    const validate = Utils.checkNumber(id, 'Job title id', Forbidden.job_titles);
+    let validate = Utils.checkNumber(id, 'Job title id', Forbidden.job_titles);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Check if the name has a length of zero
-    if (validator.isEmpty(name)) {
-        return res.send(Responses.error('Job title name is empty !'));
+
+    // Check if the job title name has a length of zero
+    validate = Utils.checkEmpty(nameCheck);
+
+    if (validate.error) {
+        return res.send(Responses.error(validate.message));
     }
     const title = {
         id: id,
@@ -93,18 +106,12 @@ router.post('/update-job-title-name', (req, res) => {
     };
 
     // Update job title name
-    JobTitleController.update(title, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success(title));
-    });
+    await JobTitleController.update(title);
+
+    return res.send(Responses.success({}));
 });
 
-router.post('/delete-job-title', (req, res) => {
+router.post('/delete-job-title', async(req, res) => {
     const id = req.body.id;
     let validate;
 
@@ -119,15 +126,9 @@ router.post('/delete-job-title', (req, res) => {
         return res.send(Responses.error(validate.message));
     }
     // Delete job title
-    JobTitleController.delete(id, (error, result) => {
-        if (error) {
-            return res.send(Responses.error(error));
-        }
-        if (result.length === 0) {
-            return res.send(Responses.empty());
-        }
-        return res.send(Responses.success({}));
-    });
+    await JobTitleController.delete(id);
+
+    return res.send(Responses.success({}));
 });
 
 module.exports = router;

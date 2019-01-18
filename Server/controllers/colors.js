@@ -57,7 +57,7 @@ class ColorController {
         // Create new color
         Color.create(data, (error, result) => {
             if (error) {
-                callback(error, null);
+                return callback(error, null);
             }
             // Find by color id
             Color.findById(result.insertId, callback);
@@ -68,47 +68,27 @@ class ColorController {
      * Update color name
      *
      * @param params
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(params, callback) {
+    async update(params) {
         const data = {
             id: params.id,
             name: params.name
         };
 
-        // Find by color id
-        Color.findById(params.id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Update color name
-                Color.update(data, callback);
-            }
-        });
+        // Update color name
+        await Color.update(data);
     }
 
     /**
      * Delete color
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
-        // Find by color id
-        Color.findById(id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Delete color
-                Color.delete(id, callback);
-            }
-        });
+    async delete(id) {
+        // Delete color
+        await Color.delete(id);
     }
 }
 

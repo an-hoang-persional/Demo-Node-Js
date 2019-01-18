@@ -57,7 +57,7 @@ class MovieController {
         // Create new movie
         Movie.create(data, (error, result) => {
             if (error) {
-                callback(error, null);
+                return callback(error, null);
             }
             // Find by movie id
             Movie.findById(result.insertId, callback);
@@ -68,47 +68,27 @@ class MovieController {
      * Update movie name
      *
      * @param params
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(params, callback) {
+    async update(params) {
         const data = {
             id: params.id,
             name: params.name
         };
 
-        // Find by movie id
-        Movie.findById(params.id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Update movie name
-                Movie.update(data, callback);
-            }
-        });
+        // Update movie name
+        await Movie.update(data);
     }
 
     /**
      * Delete movie
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
-        // Find by movie id
-        Movie.findById(id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Delete movie
-                Movie.delete(id, callback);
-            }
-        });
+    async delete(id) {
+        // Delete movie
+        await Movie.delete(id);
     }
 }
 

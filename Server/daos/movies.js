@@ -67,21 +67,21 @@ class Movies {
      * Update movie name
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(data, callback) {
+    async update(data) {
         const query = 'UPDATE movies SET movie_name = ? WHERE movie_id = ?';
 
-        Connection.query(query, [data.name, data.id], callback);
+        await Connection.query(query, [data.name, data.id]);
     }
 
     /**
      * Delete movie
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
+    async delete(id) {
         let query = 'DELETE FROM movies';
 
         if (Array.isArray(id)) {
@@ -90,7 +90,7 @@ class Movies {
         } else {
             query += ' WHERE movie_id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 }
 

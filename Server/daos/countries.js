@@ -67,21 +67,21 @@ class Countries {
      * Update country
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(data, callback) {
+    async update(data) {
         const query = 'UPDATE countries SET country_name = ?, country_code = ? WHERE country_id = ?';
 
-        Connection.query(query, [data.name, data.code, data.id], callback);
+        await Connection.query(query, [data.name, data.code, data.id]);
     }
 
     /**
      * Delete country
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
+    async delete(id) {
         let query = 'DELETE FROM countries';
 
         if (Array.isArray(id)) {
@@ -90,7 +90,7 @@ class Countries {
         } else {
             query += ' WHERE country_id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 }
 

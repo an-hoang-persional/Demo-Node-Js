@@ -67,21 +67,21 @@ class JobTitles {
      * Update job title name
      *
      * @param data
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(data, callback) {
+    async update(data) {
         const query = 'UPDATE job_titles SET job_title_name = ? WHERE job_title_id = ?';
 
-        Connection.query(query, [data.name, data.id], callback);
+        await Connection.query(query, [data.name, data.id]);
     }
 
     /**
      * Delete job title
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
+    async delete(id) {
         let query = 'DELETE FROM job_titles';
 
         if (Array.isArray(id)) {
@@ -90,7 +90,7 @@ class JobTitles {
         } else {
             query += ' WHERE job_title_id = ?';
         }
-        Connection.query(query, [id], callback);
+        await Connection.query(query, [id]);
     }
 }
 

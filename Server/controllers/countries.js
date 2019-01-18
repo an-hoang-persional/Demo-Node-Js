@@ -58,7 +58,7 @@ class CountryController {
         // Create new country
         Country.create(data, (error, result) => {
             if (error) {
-                callback(error, null);
+                return callback(error, null);
             }
             // Find by country id
             Country.findById(result.insertId, callback);
@@ -69,48 +69,28 @@ class CountryController {
      * Update country
      *
      * @param params
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(params, callback) {
+    async update(params) {
         const data = {
             id: params.id,
             name: params.name,
             code: params.code
         };
 
-        // Find by country id
-        Country.findById(params.id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Update country
-                Country.update(data, callback);
-            }
-        });
+        // Update country
+        await Country.update(data);
     }
 
     /**
      * Delete country
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
-        // Find by country id
-        Country.findById(id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Delete country
-                Country.delete(id, callback);
-            }
-        });
+    async delete(id) {
+        // Delete country
+        await Country.delete(id);
     }
 }
 

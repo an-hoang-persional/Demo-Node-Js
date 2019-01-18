@@ -57,7 +57,7 @@ class CarModelController {
         // Create new car model
         CarModel.create(data, (error, result) => {
             if (error) {
-                callback(error, null);
+                return callback(error, null);
             }
             // Find by car model id
             CarModel.findById(result.insertId, callback);
@@ -68,47 +68,27 @@ class CarModelController {
      * Update car model
      *
      * @param params
-     * @param callback
+     * @returns {Promise<void>}
      */
-    update(params, callback) {
+    async update(params) {
         const data = {
             id: params.id,
             model: params.model
         };
 
-        // Find by car model id
-        CarModel.findById(params.id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Update car model
-                CarModel.update(data, callback);
-            }
-        });
+        // Update car model
+        await CarModel.update(data);
     }
 
     /**
      * Delete car model
      *
      * @param id
-     * @param callback
+     * @returns {Promise<void>}
      */
-    delete(id, callback) {
-        // Find by car model id
-        CarModel.findById(id, (error, result) => {
-            if (error) {
-                callback(error, null);
-            }
-            if (result.length === 0) {
-                callback(null, []);
-            } else {
-                // Delete car model
-                CarModel.delete(id, callback);
-            }
-        });
+    async delete(id) {
+        // Delete car model
+        await CarModel.delete(id);
     }
 }
 
