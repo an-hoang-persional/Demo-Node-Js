@@ -1,8 +1,8 @@
 const singleton = Symbol('singleton');
 
-const Gener = new (require('../daos/geners'))();
+const Genre = new (require('../daos/genres'))();
 
-class GenerController {
+class GenreController {
     static get instance() {
         if (!this[singleton]) {
             this[singleton] = new this;
@@ -23,49 +23,49 @@ class GenerController {
     }
 
     /**
-     * Find all geners
+     * Find all genres
      *
      * @param callback
      */
     findAll(callback) {
-        // Find all geners
-        Gener.findAll(callback);
+        // Find all genres
+        Genre.findAll(callback);
     }
 
     /**
-     * Find by gener id
+     * Find by genre id
      *
      * @param id
      * @param callback
      */
     findById(id, callback) {
-        // Find by gener id
-        Gener.findById(id, callback);
+        // Find by genre id
+        Genre.findById(id, callback);
     }
 
     /**
-     * Create new gener
+     * Create new genre
      *
      * @param name
      * @param callback
      */
     create(name, callback) {
         const data = {
-            gener_name: name
+            genre_name: name
         };
 
-        // Create new gener
-        Gener.create(data, (error, result) => {
+        // Create new genre
+        Genre.create(data, (error, result) => {
             if (error) {
                 return callback(error, null);
             }
-            // Find by gener id
-            Gener.findById(result.insertId, callback);
+            // Find by genre id
+            Genre.findById(result.insertId, callback);
         });
     }
 
     /**
-     * Update gener name
+     * Update genre name
      *
      * @param params
      * @returns {Promise<void>}
@@ -76,20 +76,20 @@ class GenerController {
             name: params.name
         };
 
-        // Update gener name
-        await Gener.update(data);
+        // Update genre name
+        await Genre.update(data);
     }
 
     /**
-     * Delete gener
+     * Delete genre
      *
      * @param id
      * @returns {Promise<void>}
      */
     async delete(id) {
-        // Delete gener
-        await Gener.delete(id);
+        // Delete genre
+        await Genre.delete(id);
     }
 }
 
-module.exports = GenerController;
+module.exports = GenreController;

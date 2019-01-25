@@ -81,12 +81,12 @@ CREATE TABLE `countries` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `geners`
+-- Table structure for table `genres`
 --
 
-CREATE TABLE `geners` (
-  `gener_id` int(12) NOT NULL,
-  `gener_name` varchar(32) NOT NULL
+CREATE TABLE `genres` (
+  `genre_id` int(12) NOT NULL,
+  `genre_name` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -188,13 +188,13 @@ CREATE TABLE `user_country` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_gener`
+-- Table structure for table `user_genre`
 --
 
-CREATE TABLE `user_gener` (
+CREATE TABLE `user_genre` (
   `id` int(12) NOT NULL,
   `user_id` int(12) NOT NULL,
-  `gener_id` int(12) NOT NULL
+  `genre_id` int(12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -287,10 +287,10 @@ ALTER TABLE `countries`
   ADD PRIMARY KEY (`country_id`);
 
 --
--- Indexes for table `geners`
+-- Indexes for table `genres`
 --
-ALTER TABLE `geners`
-  ADD PRIMARY KEY (`gener_id`);
+ALTER TABLE `genres`
+  ADD PRIMARY KEY (`genre_id`);
 
 --
 -- Indexes for table `job_titles`
@@ -341,9 +341,9 @@ ALTER TABLE `user_country`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_gener`
+-- Indexes for table `user_genre`
 --
-ALTER TABLE `user_gener`
+ALTER TABLE `user_genre`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -405,10 +405,10 @@ ALTER TABLE `countries`
   MODIFY `country_id` int(12) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `geners`
+-- AUTO_INCREMENT for table `genres`
 --
-ALTER TABLE `geners`
-  MODIFY `gener_id` int(12) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `genres`
+  MODIFY `genre_id` int(12) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `job_titles`
@@ -459,9 +459,9 @@ ALTER TABLE `user_country`
   MODIFY `id` int(12) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_gener`
+-- AUTO_INCREMENT for table `user_genre`
 --
-ALTER TABLE `user_gener`
+ALTER TABLE `user_genre`
   MODIFY `id` int(12) NOT NULL AUTO_INCREMENT;
 
 --

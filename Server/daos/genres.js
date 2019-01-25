@@ -2,7 +2,7 @@ const singleton = Symbol('singleton');
 
 const Connection = require('../database/database');
 
-class Geners {
+class Genres {
     static get instance() {
         if (!this[singleton]) {
             this[singleton] = new this;
@@ -23,75 +23,75 @@ class Geners {
     }
 
     /**
-     * Find all geners
+     * Find all genres
      *
      * @param callback
      */
     findAll(callback) {
-        const query = 'SELECT * FROM geners';
+        const query = 'SELECT * FROM genres';
 
         Connection.query(query, [], callback);
     }
 
     /**
-     * Find by gener id
+     * Find by genre id
      *
      * @param id
      * @param callback
      */
     findById(id, callback) {
-        let query = 'SELECT * FROM geners';
+        let query = 'SELECT * FROM genres';
 
         if (Array.isArray(id)) {
-            query += ' WHERE gener_id IN (?)';
+            query += ' WHERE genre_id IN (?)';
             id = id.join(', ');
         } else {
-            query += ' WHERE gener_id = ?';
+            query += ' WHERE genre_id = ?';
         }
         Connection.query(query, [id], callback);
     }
 
     /**
-     * Create new gener
+     * Create new genre
      *
      * @param data
      * @param callback
      */
     create(data, callback) {
-        const query = 'INSERT INTO geners SET ?';
+        const query = 'INSERT INTO genres SET ?';
 
         Connection.query(query, data, callback);
     }
 
     /**
-     * Update gener name
+     * Update genre name
      *
      * @param data
      * @returns {Promise<void>}
      */
     async update(data) {
-        const query = 'UPDATE geners SET gener_name = ? WHERE gener_id = ?';
+        const query = 'UPDATE genres SET genre_name = ? WHERE genre_id = ?';
 
         await Connection.query(query, [data.name, data.id]);
     }
 
     /**
-     * Delete gener
+     * Delete genre
      *
      * @param id
      * @returns {Promise<void>}
      */
     async delete(id) {
-        let query = 'DELETE FROM geners';
+        let query = 'DELETE FROM genres';
 
         if (Array.isArray(id)) {
-            query += ' WHERE gener_id IN (?)';
+            query += ' WHERE genre_id IN (?)';
             id = id.join(', ');
         } else {
-            query += ' WHERE gener_id = ?';
+            query += ' WHERE genre_id = ?';
         }
         await Connection.query(query, [id]);
     }
 }
 
-module.exports = Geners;
+module.exports = Genres;

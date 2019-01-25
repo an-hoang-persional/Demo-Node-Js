@@ -5,42 +5,42 @@ const Forbidden = require('../common/forbidden');
 const Responses = require('../common/responses');
 const Utils = require('../common/utils');
 
-const GenerController = new (require('../controllers/geners'))();
+const GenreController = new (require('../controllers/genres'))();
 
 const router = express.Router();
 
-router.post('/find-all-geners', (req, res) => {
-    // Find all geners
-    GenerController.findAll((error, result) => {
+router.post('/find-all-genres', (req, res) => {
+    // Find all genres
+    GenreController.findAll((error, result) => {
         if (error) {
             return res.send(Responses.error(error));
         }
         if (result.length === 0) {
             return res.send(Responses.empty());
         }
-        let geners = [];
+        let genres = [];
 
-        for (let gener of result) {
-            geners.push({
-                id: gener.gener_id,
-                name: gener.gener_name
+        for (let genre of result) {
+            genres.push({
+                id: genre.genre_id,
+                name: genre.genre_name
             });
         }
-        return res.send(Responses.success(geners));
+        return res.send(Responses.success(genres));
     });
 });
 
-router.post('/find-by-gener-id', (req, res) => {
+router.post('/find-by-genre-id', (req, res) => {
     const id = req.body.id;
 
-    // Check the gener id
-    const validate = Utils.checkNumber(id, 'Gener id');
+    // Check the genre id
+    const validate = Utils.checkNumber(id, 'Genre id');
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Find by gener id
-    GenerController.findById(id, (error, result) => {
+    // Find by genre id
+    GenreController.findById(id, (error, result) => {
         if (error) {
             return res.send(Responses.error(error));
         }
@@ -48,85 +48,85 @@ router.post('/find-by-gener-id', (req, res) => {
             return res.send(Responses.empty());
         }
         return res.send(Responses.success({
-            id: result[0].gener_id,
-            name: result[0].gener_name
+            id: result[0].genre_id,
+            name: result[0].genre_name
         }));
     });
 });
 
-router.post('/create-new-gener', (req, res) => {
+router.post('/create-new-genre', (req, res) => {
     const name = req.body.name;
     const nameCheck = {
         value: name,
-        label: 'Gener name'
+        label: 'Genre name'
     };
 
-    // Check if the gener name has a length of zero
+    // Check if the genre name has a length of zero
     const validate = Utils.checkEmpty(nameCheck);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Create new gener
-    GenerController.create(name, (error, result) => {
+    // Create new genre
+    GenreController.create(name, (error, result) => {
         if (error) {
             return res.send(Responses.error(error));
         }
         return res.send(Responses.success({
-            id: result[0].gener_id,
-            name: result[0].gener_name
+            id: result[0].genre_id,
+            name: result[0].genre_name
         }));
     });
 });
 
-router.post('/change-gener-name', async(req, res) => {
+router.post('/change-genre-name', async(req, res) => {
     const id = req.body.id;
     const name = req.body.name;
     const nameCheck = {
         value: name,
-        label: 'Gener name'
+        label: 'Genre name'
     };
 
-    // Check the gener id
-    let validate = Utils.checkNumber(id, 'Gener id', Forbidden.geners);
+    // Check the genre id
+    let validate = Utils.checkNumber(id, 'Genre id', Forbidden.genres);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
 
-    // Check if the gener name has a length of zero
+    // Check if the genre name has a length of zero
     validate = Utils.checkEmpty(nameCheck);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    const gener = {
+    const genre = {
         id: id,
         name: name
     };
 
-    // Update gener name
-    await GenerController.update(gener);
+    // Update genre name
+    await GenreController.update(genre);
 
     return res.send(Responses.success({}));
 });
 
-router.post('/delete-gener', async(req, res) => {
+router.post('/delete-genre', async(req, res) => {
     const id = req.body.id;
     let validate;
 
     if (Array.isArray(id)) {
-        // Check the array of gener id
-        validate = Utils.checkListNumber(id, 'Gener id', Forbidden.geners);
+        // Check the array of genre id
+        validate = Utils.checkListNumber(id, 'Genre id', Forbidden.genres);
     } else {
-        // Check the gener id
-        validate = Utils.checkNumber(id, 'Gener id', Forbidden.geners);
+        // Check the genre id
+        validate = Utils.checkNumber(id, 'Genre id', Forbidden.genres);
     }
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Delete gener
-    await GenerController.delete(id);
+    // Delete genre
+    await GenreController.delete(id);
 
     return res.send(Responses.success({}));
 });

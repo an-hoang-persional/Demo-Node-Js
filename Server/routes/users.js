@@ -574,9 +574,9 @@ router.post('/delete-user-country', async(req, res) => {
     return res.send(Responses.success({}));
 });
 
-router.post('/add-user-gener', async(req, res) => {
+router.post('/add-user-genre', async(req, res) => {
     const userId = req.body.user_id;
-    const generId = req.body.gener_id;
+    const genreId = req.body.genre_id;
 
     // Check the user id
     let validate = Utils.checkNumber(userId, 'User id', Forbidden.user);
@@ -585,67 +585,67 @@ router.post('/add-user-gener', async(req, res) => {
         return res.send(Responses.error(validate.message));
     }
 
-    // Check the gener id
-    validate = Utils.checkNumber(generId, 'Gener id');
+    // Check the genre id
+    validate = Utils.checkNumber(genreId, 'Genre id');
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    const userGener = {
+    const userGenre = {
         userId: userId,
-        generId: generId
+        genreId: genreId
     };
 
-    // Add new user gener relationship
-    await UserController.addGener(userGener);
+    // Add new user genre relationship
+    await UserController.addGenre(userGenre);
 
     return res.send(Responses.success({}));
 });
 
-router.post('/change-user-gener', async(req, res) => {
+router.post('/change-user-genre', async(req, res) => {
     const id = req.body.id;
-    const generId = req.body.gener_id;
+    const genreId = req.body.genre_id;
 
     // Check the relationship id
-    let validate = Utils.checkNumber(id, 'Relationship id', Forbidden.user_gener);
+    let validate = Utils.checkNumber(id, 'Relationship id', Forbidden.user_genre);
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
 
-    // Check the gener id
-    validate = Utils.checkNumber(generId, 'Gener id');
+    // Check the genre id
+    validate = Utils.checkNumber(genreId, 'Genre id');
 
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    const userGener = {
+    const userGenre = {
         id: id,
-        generId: generId
+        genreId: genreId
     };
 
-    // Update user gener relationship
-    await UserController.updateGener(userGener);
+    // Update user genre relationship
+    await UserController.updateGenre(userGenre);
 
     return res.send(Responses.success({}));
 });
 
-router.post('/delete-user-gener', async(req, res) => {
+router.post('/delete-user-genre', async(req, res) => {
     const id = req.body.id;
     let validate;
 
     if (Array.isArray(id)) {
         // Check the array of relationship id
-        validate = Utils.checkListNumber(id, 'Relationship id', Forbidden.user_gener);
+        validate = Utils.checkListNumber(id, 'Relationship id', Forbidden.user_genre);
     } else {
         // Check the relationship id
-        validate = Utils.checkNumber(id, 'Relationship id', Forbidden.user_gener);
+        validate = Utils.checkNumber(id, 'Relationship id', Forbidden.user_genre);
     }
     if (validate.error) {
         return res.send(Responses.error(validate.message));
     }
-    // Delete user gener relationship
-    await UserController.deleteGener(id);
+    // Delete user genre relationship
+    await UserController.deleteGenre(id);
 
     return res.send(Responses.success({}));
 });

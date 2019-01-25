@@ -23,27 +23,15 @@ class Users {
     }
 
     /**
-     * Sign in
+     * Login
      *
-     * @param account
+     * @param email
      * @param callback
      */
-    signIn(account, callback) {
-        const query = 'SELECT * FROM users WHERE username = ? OR email = ?';
+    login(email, callback) {
+        const query = 'SELECT * FROM users WHERE email = ?';
 
-        Connection.query(query, [account, account], callback);
-    }
-
-    /**
-     * Sign up
-     *
-     * @param data
-     * @param callback
-     */
-    signUp(data, callback) {
-        const query = 'INSERT INTO users SET ?';
-
-        Connection.query(query, data, callback);
+        Connection.query(query, [email], callback);
     }
 
     /**
@@ -77,7 +65,7 @@ class Users {
                 colors_tmp.*,
                 companies_tmp.*,
                 countries_tmp.*,
-                geners_tmp.*,
+                genres_tmp.*,
                 job_titles_tmp.*,
                 movies_tmp.*,
                 universities_tmp.*
@@ -135,14 +123,14 @@ class Users {
                 ON countries_tmp.user_id = users_tmp.user_id
             LEFT JOIN (
                 SELECT
-                    user_gener.id AS user_gener_id, user_gener.user_id,
-                    geners.gener_id, geners.gener_name
-                FROM user_gener
-                INNER JOIN geners
-                    ON geners.gener_id = user_gener.gener_id
-                WHERE user_gener.user_id = ?
-            ) geners_tmp
-                ON geners_tmp.user_id = users_tmp.user_id
+                    user_genre.id AS user_genre_id, user_genre.user_id,
+                    genres.genre_id, genres.genre_name
+                FROM user_genre
+                INNER JOIN genres
+                    ON genres.genre_id = user_genre.genre_id
+                WHERE user_genre.user_id = ?
+            ) genres_tmp
+                ON genres_tmp.user_id = users_tmp.user_id
             LEFT JOIN (
                 SELECT
                     user_job_title.id AS user_job_title_id, user_job_title.user_id,
@@ -270,7 +258,7 @@ class Users {
     async delete(id) {
         let query = `
             DELETE
-                users, user_profile, user_car, user_color, user_company, user_country, user_gener, user_job_title, user_movie, user_university
+                users, user_profile, user_car, user_color, user_company, user_country, user_genre, user_job_title, user_movie, user_university
             FROM users
             INNER JOIN user_profile
                 ON users.user_id = user_profile.user_id
@@ -282,8 +270,8 @@ class Users {
                 ON users.user_id = user_company.user_id
             INNER JOIN user_country
                 ON users.user_id = user_country.user_id
-            INNER JOIN user_gener
-                ON users.user_id = user_gener.user_id
+            INNER JOIN user_genre
+                ON users.user_id = user_genre.user_id
             INNER JOIN user_job_title
                 ON users.user_id = user_job_title.user_id
             INNER JOIN user_movie
@@ -469,38 +457,38 @@ class Users {
     }
 
     /**
-     * Add new user gener relationship
+     * Add new user genre relationship
      *
      * @param data
      * @returns {Promise<void>}
      */
-    async addGener(data) {
-        const query = 'INSERT INTO user_gener SET ?';
+    async addGenre(data) {
+        const query = 'INSERT INTO user_genre SET ?';
 
         await Connection.query(query, data);
     }
 
     /**
-     * Update user gener relationship
+     * Update user genre relationship
      *
      * @param data
      * @returns {Promise<void>}
      */
-    async updateGener(data) {
-        const query = 'UPDATE user_gener SET gener_id = ? WHERE id = ?';
+    async updateGenre(data) {
+        const query = 'UPDATE user_genre SET genre_id = ? WHERE id = ?';
 
-        await Connection.query(query, [data.generId, data.id]);
+        await Connection.query(query, [data.genreId, data.id]);
     }
 
     /**
-     * Delete user gener relationship
+     * Delete user genre relationship
      *
      * @param id
      * @param callback
      * @returns {Promise<void>}
      */
-    async deleteGener(id, callback) {
-        let query = 'DELETE FROM user_gener';
+    async deleteGenre(id, callback) {
+        let query = 'DELETE FROM user_genre';
 
         if (Array.isArray(id)) {
             query += ' WHERE id IN (?)';

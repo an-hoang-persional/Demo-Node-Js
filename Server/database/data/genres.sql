@@ -1,4 +1,4 @@
-INSERT INTO `geners`(`gener_id`, `gener_name`) VALUES
+INSERT INTO `genres`(`genre_id`, `genre_name`) VALUES
 (1, '(no genres listed)'),
 (2, 'Action'),
 (3, 'Adventure'),

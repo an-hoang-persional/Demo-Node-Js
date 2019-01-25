@@ -23,6 +23,17 @@ class UserController {
     }
 
     /**
+     * Login
+     *
+     * @param email
+     * @param callback
+     */
+    login(email, callback) {
+        // Login
+        User.login(email, callback);
+    }
+
+    /**
      * Find all users
      *
      * @param callback
@@ -52,7 +63,7 @@ class UserController {
             let colors = [];
             let companies = [];
             let countries = [];
-            let geners = [];
+            let genres = [];
             let jobTitles = [];
             let movies = [];
             let universities = [];
@@ -146,19 +157,19 @@ class UserController {
                     countries.push(country);
                 }
 
-                // User's geners
-                const gener = {
-                    relationshipId: _data.user_gener_id,
-                    id: _data.gener_id,
-                    name: _data.gener_name
+                // User's genres
+                const genre = {
+                    relationshipId: _data.user_genre_id,
+                    id: _data.genre_id,
+                    name: _data.genre_name
                 };
-                // Check if the object gener is already exist in array geners
-                const checkGener = geners.filter(_gener => {
-                    return _gener.relationshipId === gener.relationshipId && _gener.id === gener.id;
+                // Check if the object genre is already exist in array genres
+                const checkGenre = genres.filter(_genre => {
+                    return _genre.relationshipId === genre.relationshipId && _genre.id === genre.id;
                 });
 
-                if (checkGener.length === 0) {
-                    geners.push(gener);
+                if (checkGenre.length === 0) {
+                    genres.push(genre);
                 }
 
                 // User's job titles
@@ -210,7 +221,7 @@ class UserController {
             user.colors = colors;
             user.companies = companies;
             user.countries = countries;
-            user.geners = geners;
+            user.genres = genres;
             user.jobTitles = jobTitles;
             user.movies = movies;
             user.universities = universities;
@@ -508,46 +519,46 @@ class UserController {
     }
 
     /**
-     * Add new user gener relationship
+     * Add new user genre relationship
      *
      * @param params
      * @returns {Promise<void>}
      */
-    async addGener(params) {
+    async addGenre(params) {
         const data = {
             user_id: params.userId,
-            gener_id: params.generId
+            genre_id: params.genreId
         };
 
-        // Add new user gener relationship
-        await User.addGener(data);
+        // Add new user genre relationship
+        await User.addGenre(data);
     }
 
     /**
-     * Update user gener relationship
+     * Update user genre relationship
      *
      * @param params
      * @returns {Promise<void>}
      */
-    async updateGener(params) {
+    async updateGenre(params) {
         const data = {
             id: params.id,
-            generId: params.generId
+            genreId: params.genreId
         };
 
-        // Update user gener relationship
-        await User.updateGener(data);
+        // Update user genre relationship
+        await User.updateGenre(data);
     }
 
     /**
-     * Delete user gener relationship
+     * Delete user genre relationship
      *
      * @param id
      * @returns {Promise<void>}
      */
-    async deleteGener(id) {
-        // Delete user gener relationship
-        await User.deleteGener(id);
+    async deleteGenre(id) {
+        // Delete user genre relationship
+        await User.deleteGenre(id);
     }
 
     /**

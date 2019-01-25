@@ -1,4 +1,4 @@
-INSERT INTO `user_gener`(`id`, `user_id`, `gener_id`) VALUES
+INSERT INTO `user_genre`(`id`, `user_id`, `genre_id`) VALUES
 (1, 1, 3),
 (2, 1, 5),
 (3, 1, 14),
